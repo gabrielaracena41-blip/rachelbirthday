@@ -569,6 +569,7 @@
       padding: 0;
       overflow: hidden;
       background: #000;
+      margin-top: -738px;
     }
 
     #flowersFrame {
@@ -709,10 +710,61 @@
           </p>
 
         </div>
+        <audio id="miMusica" src="Camilo - Corazón de Hojalata (Official Video).mp3" preload="auto"></audio>
+
 
       </div>
 
     </section>
+     <script>
+      // Tu lista de tiempos exacta en tu script principal
+const lyricsData = [
+    { time: 0, text: "" },
+    { time: 5, text: "Hay corazones que aprenden a querer..." },
+    { time: 12, text: "aunque hayan aprendido primero a protegerse." },
+    { time: 20, text: "Y hay personas que llegan..." },
+    { time: 27, text: "y hacen que todo vuelva a sentirse diferente." },
+    { time: 35, text: "Como si ciertos encuentros..." },
+    { time: 43, text: "estuvieran destinados a convertirse en recuerdos." }
+];
+
+function iniciarLetrasAutomaticas() {
+  const audio = document.getElementById("miMusica");
+  const iframe = document.getElementById("flowersFrame");
+
+  if (!audio || !iframe) return;
+
+  // Escuchamos el avance del audio desde afuera
+  audio.addEventListener("timeupdate", () => {
+    const currentTime = audio.currentTime;
+    let currentText = "";
+
+    // Buscamos la frase según el segundo
+    for (let i = 0; i < lyricsData.length; i++) {
+      if (currentTime >= lyricsData[i].time) {
+        currentText = lyricsData[i].text;
+      }
+    }
+
+    // Accedemos al elemento #lyrics de adentro del iframe de forma segura
+    try {
+      const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+      const lyricTxt = iframeDoc.getElementById("lyrics");
+
+      if (lyricTxt && lyricTxt.innerHTML !== currentText) {
+        lyricTxt.style.opacity = 0;
+        setTimeout(() => {
+          lyricTxt.innerHTML = currentText;
+          lyricTxt.style.opacity = 1;
+        }, 150);
+      }
+    } catch (e) {
+      console.error("Error al acceder al contenido del iframe:", e);
+    }
+  });
+}
+  
+  </script>
 
 
 
@@ -1423,16 +1475,31 @@ todavía estén por llegar. ♡`
        ===================================================== */
 
     function openFlowers() {
-
+      const audio = document.getElementById("musicaFlores");
+  if (audio) {
+    audio.play().catch(error => {
+      console.log("El navegador bloqueó el audio o la ruta es incorrecta:", error);
+    });
+  }
       showScreen("flowersScreen");
+      
 
     }
 
+    // Seleccionas el apartado que quieres mostrar
+const miApartado = document.getElementById("flowersScreen");
+
+// Hace el scroll automático e inmediato
+miApartado.scrollIntoView({ behavior: "smooth", block: "start" });
+
   </script>
 
-</body>
-</html>
-    <section id="flowersScreen" class="screen">
+  
+
+  <section id="flowersScreen" class="screen">
+
+    
+    
       <iframe id="flowersFrame" title="Flores para Rachel" srcdoc="&lt;!DOCTYPE html&gt;
 &lt;html lang=&quot;es&quot;&gt;
 &lt;head&gt;
@@ -3507,3 +3574,8 @@ window.onload = () =&gt; {
       <button class="flowers-back" onclick="showScreen('menuScreen')">← Volver</button>
     </section>
 
+
+<audio id="musicaFlores" src="Camilo - Corazón de Hojalata (Official Video).mp3" preload="auto"></audio>
+</body>
+</html>
+    
